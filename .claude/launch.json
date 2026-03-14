@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "xiloweb",
+      "runtimeExecutable": "/usr/bin/python3",
+      "runtimeArgs": ["-c", "import http.server,socketserver\nclass H(http.server.SimpleHTTPRequestHandler):\n def __init__(self,*a,**k): super().__init__(*a,directory='/Users/rta000725/Documents/Projects/Xipe Repositorio/xiloweb',**k)\n def log_message(self,*a): pass\nwith socketserver.TCPServer(('',3456),H) as s: s.serve_forever()"],
+      "port": 3456
+    }
+  ]
+}
