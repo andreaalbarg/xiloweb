@@ -1,0 +1,45 @@
+<section class="community">
+    <div class="community-container">
+        <h2 class="community-title">@Translation.T("community-title")</h2>
+        <p class="community-desc">
+            <em>@Translation.T("community-subtitle")</em>
+        </p>
+    </div>
+    <div class="community-carousel">
+        <div class="community-track">
+            <img src="/images/Logo1.png" alt="Partner 1" class="community-logo" />
+            <img src="/images/Logo2.png" alt="Partner 2" class="community-logo" />
+            <img src="/images/Logo3.svg" alt="Partner 3" class="community-logo" />
+            <img src="/images/Logo4.png" alt="Partner 4" class="community-logo" />
+            <img src="/images/Logo5.png" alt="Partner 5" class="community-logo" />
+            <img src="/images/Logo6.png" alt="Partner 6" class="community-logo" style="width:220px;height:85px" />
+            <!-- Duplicates for seamless infinite loop -->
+            <img src="/images/Logo1.png" alt="Partner 1" class="community-logo" />
+            <img src="/images/Logo2.png" alt="Partner 2" class="community-logo" />
+            <img src="/images/Logo3.svg" alt="Partner 3" class="community-logo" />
+            <img src="/images/Logo4.png" alt="Partner 4" class="community-logo" />
+            <img src="/images/Logo5.png" alt="Partner 5" class="community-logo" />
+            <img src="/images/Logo6.png" alt="Partner 6" class="community-logo" style="width:220px;height:85px" />
+        </div>
+    </div>
+</section>
+
+@code {
+    [CascadingParameter]
+    public TranslationService Translation { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        Translation.OnLanguageChanged += OnLanguageChanged;
+    }
+
+    private void OnLanguageChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        Translation.OnLanguageChanged -= OnLanguageChanged;
+    }
+}

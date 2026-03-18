@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "XiloWebDesign": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:53986;http://localhost:53987"
+    }
+  }
+}

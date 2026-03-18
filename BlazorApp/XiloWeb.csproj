@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>XiloWeb</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.0" PrivateAssets="all" />
+  </ItemGroup>
+  <!-- Automatically include images from the repo root images\ folder into wwwroot/images/ -->
+  <ItemGroup>
+    <Content Include="..\images\**" Link="wwwroot\images\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="..\images\.DS_Store" />
+    <Content Remove="..\images\ChopLocal.JPG" />
+    <Content Remove="..\images\DD1.JPG" />
+    <Content Remove="..\images\DD2.JPG" />
+    <Content Remove="..\images\DD3.jpg" />
+    <Content Remove="..\images\DD4.jpg" />
+    <Content Remove="..\images\Hero.jpg" />
+    <Content Remove="..\images\HIS1.png" />
+    <Content Remove="..\images\HIS2.png" />
+    <Content Remove="..\images\HIS3.png" />
+    <Content Remove="..\images\HIS4.jpg" />
+    <Content Remove="..\images\HIS5.jpg" />
+    <Content Remove="..\images\HIS6.jpg" />
+    <Content Remove="..\images\HIS7.jpg" />
+    <Content Remove="..\images\LN1.jpg" />
+    <Content Remove="..\images\LN2.jpg" />
+    <Content Remove="..\images\LN3.jpg" />
+    <Content Remove="..\images\logo-dark.png" />
+    <Content Remove="..\images\logo-white.png" />
+    <Content Remove="..\images\Logo1.png" />
+    <Content Remove="..\images\Logo2.png" />
+    <Content Remove="..\images\Logo3.svg" />
+    <Content Remove="..\images\Logo4.png" />
+    <Content Remove="..\images\Logo5.png" />
+    <Content Remove="..\images\README.txt" />
+  </ItemGroup>
+</Project>

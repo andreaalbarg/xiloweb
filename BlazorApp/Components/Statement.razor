@@ -1,0 +1,26 @@
+<section class="statement">
+    <div class="statement-container">
+        <p class="statement-large">@Translation.T("statement-p1")</p>
+        <p class="statement-large">@Translation.T("statement-p2")</p>
+    </div>
+</section>
+
+@code {
+    [CascadingParameter]
+    public TranslationService Translation { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        Translation.OnLanguageChanged += OnLanguageChanged;
+    }
+
+    private void OnLanguageChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        Translation.OnLanguageChanged -= OnLanguageChanged;
+    }
+}

@@ -1,0 +1,58 @@
+<section class="companies" id="companies">
+    <div class="companies-header">
+        <h2 class="companies-title">@Translation.T("companies-title")</h2>
+    </div>
+    <div class="companies-container">
+        <div class="companies-list">
+            <!-- XIPE -->
+            <div class="company-item">
+                <h3 class="company-name">XIPE</h3>
+                <p class="company-tagline">@Translation.T("xipe-tagline")</p>
+                <p class="company-desc">@Translation.T("xipe-description")</p>
+                <a href="https://xipetechnology.com/" target="_blank" class="btn btn-outline">
+                    @Translation.T("xipe-cta")
+                </a>
+            </div>
+
+            <!-- DIANA -->
+            <div class="company-item">
+                <h3 class="company-name">DIANA</h3>
+                <p class="company-tagline">@Translation.T("diana-tagline")</p>
+                <p class="company-desc">@Translation.T("diana-description")</p>
+                <a href="https://diana.tools/" target="_blank" class="btn btn-outline">
+                    @Translation.T("diana-cta")
+                </a>
+            </div>
+
+            <!-- XILO DESIGN -->
+            <div class="company-item">
+                <h3 class="company-name">XILO DESIGN</h3>
+                <p class="company-tagline">@Translation.T("xilo-tagline")</p>
+                <p class="company-desc">@Translation.T("xilo-description")</p>
+                <a href="https://xilo.design" target="_blank" class="btn btn-outline">
+                    @Translation.T("xilo-cta")
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    [CascadingParameter]
+    public TranslationService Translation { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        Translation.OnLanguageChanged += OnLanguageChanged;
+    }
+
+    private void OnLanguageChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        Translation.OnLanguageChanged -= OnLanguageChanged;
+    }
+}

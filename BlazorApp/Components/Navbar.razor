@@ -1,0 +1,99 @@
+@inject IJSRuntime JS
+@inject NavigationManager Nav
+@implements IAsyncDisposable
+
+<nav class="navbar @(IsScrolled ? "scrolled" : "")">
+    <div class="nav-container">
+        <a href="/" class="nav-logo" @onclick="ScrollToTop" @onclick:preventDefault>
+            <img src="/images/logo-white.png" alt="XILO" class="logo-img" />
+        </a>
+        <button class="nav-toggle @(IsMenuOpen ? "open" : "")"
+                aria-label="Toggle menu"
+                @onclick="ToggleMenu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <ul class="nav-links @(IsMenuOpen ? "active" : "")">
+            <li>
+                <button class="nav-btn" @onclick="OnContactClick">
+                    @Translation.T("nav-contact")
+                </button>
+            </li>
+            <li>
+                <div class="nav-lang">
+                    <button class="lang-btn @(Translation.CurrentLanguage == "en" ? "active" : "")"
+                            @onclick='() => SetLanguage("en")'>EN</button>
+                    <span class="lang-divider">/</span>
+                    <button class="lang-btn @(Translation.CurrentLanguage == "es" ? "active" : "")"
+                            @onclick='() => SetLanguage("es")'>SP</button>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+@code {
+    [CascadingParameter]
+    public TranslationService Translation { get; set; } = default!;
+
+    private bool IsScrolled { get; set; } = false;
+    private bool IsMenuOpen { get; set; } = false;
+    private DotNetObjectReference<Navbar>? _dotNetRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _dotNetRef = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("initNavbarScroll", _dotNetRef);
+            await JS.InvokeVoidAsync("initMobileNavClose", _dotNetRef);
+            await JS.InvokeVoidAsync("initFadeIn");
+            Translation.OnLanguageChanged += OnLanguageChanged;
+        }
+    }
+
+    [JSInvokable]
+    public void OnScrolled(bool scrolled)
+    {
+        IsScrolled = scrolled;
+        InvokeAsync(StateHasChanged);
+    }
+
+    [JSInvokable]
+    public void CloseNav()
+    {
+        IsMenuOpen = false;
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void ToggleMenu() => IsMenuOpen = !IsMenuOpen;
+
+    private async Task OnContactClick()
+    {
+        IsMenuOpen = false;
+        Nav.NavigateTo($"{Nav.BaseUri}#contact");
+        await JS.InvokeVoidAsync("scrollToElement", "contact");
+    }
+
+    private async Task ScrollToTop()
+    {
+        Nav.NavigateTo(Nav.BaseUri);
+        await JS.InvokeVoidAsync("scrollToTop");
+    }
+
+    private async Task SetLanguage(string lang)
+    {
+        Translation.SetLanguage(lang);
+        await JS.InvokeVoidAsync("setHtmlLang", lang);
+    }
+
+    private void OnLanguageChanged() => InvokeAsync(StateHasChanged);
+
+    public async ValueTask DisposeAsync()
+    {
+        Translation.OnLanguageChanged -= OnLanguageChanged;
+        _dotNetRef?.Dispose();
+        await Task.CompletedTask;
+    }
+}

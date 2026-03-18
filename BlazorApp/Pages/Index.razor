@@ -1,0 +1,41 @@
+@page "/"
+
+<PageTitle>XILO Venture Studio</PageTitle>
+
+<Navbar />
+<Hero />
+<Statement />
+<Companies />
+<DemoDay OnJoinModalOpen="OpenJoinModal" />
+<HowItShifts />
+<PartnerCTA />
+<Spotlight />
+<Community />
+<ContactForm PreselectedInquiry="@_preselectedInquiry" />
+<Footer />
+<JoinModal IsVisible="@_joinModalVisible"
+           OnClose="CloseJoinModal"
+           LumaUrl="@_lumaUrl" />
+
+@code {
+    private bool _joinModalVisible = false;
+
+    /// <summary>
+    /// Set this to a Luma event URL when there is an upcoming Demo Day.
+    /// Example: "https://lu.ma/your-event-id"
+    /// Leave as null when there are no upcoming events.
+    /// </summary>
+    private readonly string? _lumaUrl = null;
+
+    private string _preselectedInquiry = "";
+
+    private void OpenJoinModal()
+    {
+        _joinModalVisible = true;
+    }
+
+    private void CloseJoinModal()
+    {
+        _joinModalVisible = false;
+    }
+}

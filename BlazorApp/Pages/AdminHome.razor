@@ -1,0 +1,102 @@
+@page "/admin"
+@inject AuthService Auth
+@inject ContactApiService ContactApi
+@inject NavigationManager Nav
+
+<div class="admin-page">
+    <header class="admin-header">
+        <img src="/images/logo-white.png" alt="XILO" class="admin-logo" />
+        <h1 class="admin-title">Contact Submissions</h1>
+        <button class="btn btn-outline-white admin-logout" @onclick="Logout">Logout</button>
+    </header>
+
+    <main class="admin-main">
+        @if (_loading)
+        {
+            <p class="admin-state">Loading submissions...</p>
+        }
+        else if (_error is not null)
+        {
+            <p class="admin-state admin-state--error">@_error</p>
+        }
+        else if (_submissions is null || _submissions.Count == 0)
+        {
+            <p class="admin-state">No submissions yet.</p>
+        }
+        else
+        {
+            <p class="admin-count">@_submissions.Count submission@(_submissions.Count != 1 ? "s" : "")</p>
+            <div class="admin-table-wrapper">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Company</th>
+                            <th>Inquiry</th>
+                            <th>Message</th>
+                            <th>Email sent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var s in _submissions)
+                        {
+                            <tr>
+                                <td>@s.Id</td>
+                                <td class="admin-date">@s.CreatedAt.ToLocalTime().ToString("MMM d, yyyy HH:mm")</td>
+                                <td><strong>@s.Name</strong></td>
+                                <td><a href="mailto:@s.Email">@s.Email</a></td>
+                                <td>@s.Company</td>
+                                <td><span class="admin-badge admin-badge--@s.Inquiry.ToLower()">@s.Inquiry</span></td>
+                                <td class="admin-message">@s.Message</td>
+                                <td class="admin-sent">@(s.EmailSent ? "✓" : "–")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </main>
+</div>
+
+@code {
+    private List<ContactSubmissionDto>? _submissions;
+    private bool _loading = true;
+    private string? _error = null;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        if (!await Auth.IsAuthenticatedAsync())
+        {
+            Nav.NavigateTo("/login");
+            return;
+        }
+
+        await LoadSubmissions();
+        StateHasChanged();
+    }
+
+    private async Task LoadSubmissions()
+    {
+        _loading = true;
+        try
+        {
+            _submissions = await ContactApi.GetSubmissionsAsync();
+        }
+        catch (Exception ex)
+        {
+            _error = $"Failed to load submissions: {ex.Message}";
+        }
+        finally { _loading = false; }
+    }
+
+    private async Task Logout()
+    {
+        await Auth.LogoutAsync();
+        Nav.NavigateTo("/login");
+    }
+}

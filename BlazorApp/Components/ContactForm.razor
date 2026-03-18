@@ -1,0 +1,111 @@
+@inject EmailService EmailSvc
+
+<section class="contact" id="contact">
+    <div class="contact-container">
+        <div class="contact-left">
+            <h2 class="contact-title">@Translation.T("contact-title")</h2>
+            <p class="contact-desc">@Translation.T("contact-subtitle")</p>
+        </div>
+        <div class="contact-right">
+            @if (_submitted)
+            {
+                <div class="contact-success">
+                    <p>@Translation.T("contact-success")</p>
+                </div>
+            }
+            else
+            {
+                <EditForm Model="_model" OnValidSubmit="HandleSubmit" class="contact-form">
+                    <DataAnnotationsValidator />
+
+                    <InputSelect @bind-Value="_model.Inquiry">
+                        <option value="" disabled>@Translation.T("contact-inquiry-placeholder")</option>
+                        <option value="showcase">@Translation.T("contact-inquiry-showcase")</option>
+                        <option value="partner">@Translation.T("contact-inquiry-partner")</option>
+                        <option value="general">@Translation.T("contact-inquiry-general")</option>
+                    </InputSelect>
+                    <ValidationMessage For="() => _model.Inquiry" class="field-error" />
+
+                    <InputText @bind-Value="_model.Name"
+                               placeholder="@Translation.T("contact-name-placeholder")" />
+                    <ValidationMessage For="() => _model.Name" class="field-error" />
+
+                    <InputText @bind-Value="_model.Email"
+                               type="email"
+                               placeholder="@Translation.T("contact-email-placeholder")" />
+                    <ValidationMessage For="() => _model.Email" class="field-error" />
+
+                    <InputText @bind-Value="_model.Company"
+                               placeholder="@Translation.T("contact-company-placeholder")" />
+
+                    <InputTextArea @bind-Value="_model.Message"
+                                   rows="4"
+                                   placeholder="@Translation.T("contact-message-placeholder")" />
+                    <ValidationMessage For="() => _model.Message" class="field-error" />
+
+                    @if (_sendError is not null)
+                    {
+                        <p class="field-error">@_sendError</p>
+                    }
+
+                    <button type="submit" class="btn btn-contact" disabled="@_sending">
+                        @if (_sending)
+                        {
+                            <span>...</span>
+                        }
+                        else
+                        {
+                            @Translation.T("contact-submit")
+                        }
+                    </button>
+                </EditForm>
+            }
+        </div>
+    </div>
+</section>
+
+@code {
+    [CascadingParameter]
+    public TranslationService Translation { get; set; } = default!;
+
+    [Parameter]
+    public string PreselectedInquiry { get; set; } = "";
+
+    private ContactFormModel _model = new();
+    private bool _submitted = false;
+    private bool _sending = false;
+    private string? _sendError = null;
+
+    protected override void OnInitialized()
+    {
+        if (!string.IsNullOrEmpty(PreselectedInquiry))
+            _model.Inquiry = PreselectedInquiry;
+
+        Translation.OnLanguageChanged += OnLanguageChanged;
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (!string.IsNullOrEmpty(PreselectedInquiry) && _model.Inquiry != PreselectedInquiry)
+            _model.Inquiry = PreselectedInquiry;
+    }
+
+    private async Task HandleSubmit()
+    {
+        _sending = true;
+        _sendError = null;
+
+        var result = await EmailSvc.SendContactFormAsync(_model);
+
+        _sending = false;
+
+        if (result.IsSuccess)
+            _submitted = true;
+        else
+            _sendError = result.ErrorMessage;
+    }
+
+    private void OnLanguageChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => Translation.OnLanguageChanged -= OnLanguageChanged;
+}

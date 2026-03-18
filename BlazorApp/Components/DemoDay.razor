@@ -1,0 +1,62 @@
+@inject IJSRuntime JS
+@inject NavigationManager Nav
+
+<section class="demoday" id="investment">
+    <div class="demoday-container">
+        <div class="demoday-top">
+            <div class="demoday-title-col">
+                <h2 class="demoday-title">@Translation.T("demoday-title")</h2>
+            </div>
+            <div class="demoday-info-col">
+                <p class="demoday-desc">@Translation.T("demoday-description")</p>
+                <div class="demoday-buttons">
+                    <button class="btn btn-demoday" @onclick="OnShowcaseClick">
+                        @Translation.T("demoday-showcase")
+                    </button>
+                    <button class="btn btn-demoday" @onclick="OnJoinClick">
+                        @Translation.T("demoday-join")
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="demoday-gallery">
+            <div class="demoday-gallery-img">
+                <img src="/images/DD1.JPG" alt="Demo Day event" />
+            </div>
+            <div class="demoday-gallery-img">
+                <img src="/images/DD2.JPG" alt="Demo Day community" />
+            </div>
+            <div class="demoday-gallery-img">
+                <img src="/images/DD3.jpg" alt="Demo Day audience" />
+            </div>
+            <div class="demoday-gallery-img">
+                <img src="/images/DD4.jpg" alt="Demo Day speakers" />
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    [CascadingParameter]
+    public TranslationService Translation { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback OnJoinModalOpen { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Translation.OnLanguageChanged += OnLanguageChanged;
+    }
+
+    private async Task OnShowcaseClick()
+    {
+        Nav.NavigateTo($"{Nav.BaseUri}#contact");
+        await JS.InvokeVoidAsync("scrollToElement", "contact");
+    }
+
+    private Task OnJoinClick() => OnJoinModalOpen.InvokeAsync();
+
+    private void OnLanguageChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => Translation.OnLanguageChanged -= OnLanguageChanged;
+}

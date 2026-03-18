@@ -1,0 +1,46 @@
+@inject IJSRuntime JS
+@inject NavigationManager Nav
+
+<section class="hero">
+    <div class="hero-container">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                @Translation.T("hero-title-line1")<br />
+                @Translation.T("hero-title-line2")
+            </h1>
+            <p class="hero-text">@Translation.T("hero-text")</p>
+            <button class="btn btn-outline-white" @onclick="ScrollToPartner">
+                @Translation.T("hero-cta")
+            </button>
+        </div>
+    </div>
+    <div class="bridge-photo">
+        <img src="/images/hero.JPG" alt="Community gathering" />
+    </div>
+</section>
+
+@code {
+    [CascadingParameter]
+    public TranslationService Translation { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        Translation.OnLanguageChanged += OnLanguageChanged;
+    }
+
+    private async Task ScrollToPartner()
+    {
+        Nav.NavigateTo($"{Nav.BaseUri}#partner");
+        await JS.InvokeVoidAsync("scrollToElement", "partner");
+    }
+
+    private void OnLanguageChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        Translation.OnLanguageChanged -= OnLanguageChanged;
+    }
+}

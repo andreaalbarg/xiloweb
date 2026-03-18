@@ -1,0 +1,46 @@
+IMAGES SETUP
+============
+
+The Blazor app references images at /images/filename paths.
+The source images live at the repo root: C:\Users\page\source\repos\xiloweb\images\
+
+To serve images in development, choose one of these options:
+
+OPTION 1 — Symlink (recommended, no file duplication)
+  Run this once from an elevated command prompt or PowerShell:
+
+    mklink /D "C:\Users\page\source\repos\xiloweb\BlazorApp\wwwroot\images" "..\..\..\images"
+
+  On Linux/Mac:
+    ln -s ../../../images BlazorApp/wwwroot/images
+
+OPTION 2 — Copy the folder
+  Manually copy or xcopy the images\ folder into wwwroot\images\:
+
+    xcopy /E /I "C:\Users\page\source\repos\xiloweb\images" "C:\Users\page\source\repos\xiloweb\BlazorApp\wwwroot\images"
+
+OPTION 3 — Add a build step in XiloWeb.csproj
+  Add inside an <ItemGroup> in the .csproj:
+
+    <Content Include="..\images\**" Link="wwwroot\images\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+
+Images referenced by the app:
+  /images/logo-white.png   (Navbar, Footer)
+  /images/hero.JPG         (Hero bridge photo)
+  /images/DD1.JPG          (Demo Day gallery)
+  /images/DD2.JPG
+  /images/DD3.jpg
+  /images/DD4.jpg
+  /images/HIS1.png         (How It Shifts carousel)
+  /images/HIS2.png
+  /images/HIS3.png
+  /images/HIS4.jpg
+  /images/HIS5.jpg
+  /images/HIS6.jpg
+  /images/HIS7.jpg
+  /images/ChopLocal.JPG    (Spotlight section)
+  /images/Logo1.png        (Community carousel)
+  /images/Logo2.png
+  /images/Logo3.svg
+  /images/Logo4.png
+  /images/Logo5.png

@@ -1,0 +1,146 @@
+@inject IJSRuntime JS
+@inject NavigationManager Nav
+@implements IAsyncDisposable
+
+<section class="podcast" id="initiatives">
+    <div class="podcast-container">
+        <div class="podcast-top">
+            <div class="podcast-title-col">
+                <h2 class="podcast-title">@Translation.T("howit-title")</h2>
+                <button class="btn btn-outline" @onclick="OnExploreClick">
+                    @Translation.T("howit-cta")
+                </button>
+            </div>
+            <div class="podcast-info-col">
+                <p class="podcast-desc">@Translation.T("howit-description1")</p>
+                <p class="podcast-desc">@Translation.T("howit-description2")</p>
+                <p class="podcast-tagline">@Translation.T("howit-tagline")</p>
+                <div class="podcast-platforms">
+                    <a href="https://open.spotify.com/show/howitshifts" target="_blank"
+                       aria-label="Spotify" class="podcast-platform-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
+                        </svg>
+                    </a>
+                    <a href="https://www.youtube.com/HowItShifts" target="_blank"
+                       aria-label="YouTube" class="podcast-platform-icon">
+                        <svg width="28" height="20" viewBox="0 0 28 20" fill="currentColor">
+                            <path d="M27.4 3.1c-.3-1.2-1.2-2.1-2.4-2.4C22.8 0 14 0 14 0S5.2 0 3 .7C1.8 1 .9 1.9.6 3.1 0 5.3 0 10 0 10s0 4.7.6 6.9c.3 1.2 1.2 2.1 2.4 2.4C5.2 20 14 20 14 20s8.8 0 11-.7c1.2-.3 2.1-1.2 2.4-2.4C28 14.7 28 10 28 10s0-4.7-.6-6.9zM11.2 14.3V5.7l7.3 4.3-7.3 4.3z" />
+                        </svg>
+                    </a>
+                    <a href="#" target="_blank" aria-label="Digital Magazine" class="podcast-platform-icon">
+                        <svg width="24" height="24" viewBox="0 0 16 16" fill="currentColor">
+                            <path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5M8.16 4.1a.178.178 0 0 0-.32 0l-.634 1.285a.18.18 0 0 1-.134.098l-1.42.206a.178.178 0 0 0-.098.303L6.58 6.993c.042.041.061.1.051.158L6.39 8.565a.178.178 0 0 0 .258.187l1.27-.668a.18.18 0 0 1 .165 0l1.27.668a.178.178 0 0 0 .257-.187L9.368 7.15a.18.18 0 0 1 .05-.158l1.028-1.001a.178.178 0 0 0-.098-.303l-1.42-.206a.18.18 0 0 1-.134-.098z" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="podcast-gallery-wrapper">
+            <div class="podcast-gallery">
+                @foreach (var episode in _episodes)
+                {
+                    <div class="podcast-cover-link">
+                        <img src="@episode.ImageUrl" alt="How It Shifts Episode @episode.Number" class="podcast-cover" />
+                        <div class="podcast-overlay">
+                            <a href="@episode.YoutubeUrl" target="_blank"
+                               class="podcast-overlay-btn" aria-label="YouTube">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                                </svg>
+                            </a>
+                            <a href="@episode.SpotifyUrl" target="_blank"
+                               class="podcast-overlay-btn" aria-label="Spotify">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="podcast-arrows">
+                <button class="podcast-arrow podcast-arrow-prev"
+                        aria-label="Previous"
+                        disabled="@(_currentPage == 0)"
+                        @onclick="PrevPage">&#8592;</button>
+                <button class="podcast-arrow podcast-arrow-next"
+                        aria-label="Next"
+                        disabled="@(_currentPage >= _totalPages - 1)"
+                        @onclick="NextPage">&#8594;</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    [CascadingParameter]
+    public TranslationService Translation { get; set; } = default!;
+
+    private int _currentPage = 0;
+    private int _totalPages = 3;
+
+    private record EpisodeInfo(int Number, string ImageUrl, string YoutubeUrl, string SpotifyUrl);
+
+    private readonly List<EpisodeInfo> _episodes = new()
+    {
+        new(1, "/images/HIS1.png",
+            "https://youtu.be/S4_RwVS3EOI?si=HpFkPbkuiXMTuV1g",
+            "https://spotifycreators-web.app.link/e/GJavccKxA1b"),
+        new(2, "/images/HIS2.png",
+            "https://youtu.be/ZyF40o9nU8g?si=c_fNAbk4N3On3Il-",
+            "https://spotifycreators-web.app.link/e/vtoABbKxA1b"),
+        new(3, "/images/HIS3.png",
+            "https://youtu.be/vuVMagXv988?si=LA20YHMLldE52MwJ",
+            "https://spotifycreators-web.app.link/e/E2d1SaKxA1b"),
+        new(4, "/images/HIS4.jpg",
+            "https://youtu.be/VWz-3FP0SFQ?si=6k9_qBNdvmUi4uWc",
+            "https://spotifycreators-web.app.link/e/MEA0eaKxA1b"),
+        new(5, "/images/HIS5.jpg",
+            "https://youtu.be/jzBC5FwBWP0?si=1dUVZbDw9Elo8j1W",
+            "https://spotifycreators-web.app.link/e/aQ2xD9JxA1b"),
+        new(6, "/images/HIS6.jpg",
+            "https://youtu.be/jzBC5FwBWP0?si=1dUVZbDw9Elo8j1W",
+            "https://spotifycreators-web.app.link/e/jmyV28JxA1b"),
+        new(7, "/images/HIS7.jpg", "#", "#"),
+    };
+
+    protected override void OnInitialized()
+    {
+        _totalPages = (int)Math.Ceiling(_episodes.Count / 3.0);
+        Translation.OnLanguageChanged += OnLanguageChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await JS.InvokeVoidAsync("initPodcastSlider", null, _episodes.Count);
+    }
+
+    private async Task PrevPage()
+    {
+        _currentPage = await JS.InvokeAsync<int>("podcastPrev");
+        StateHasChanged();
+    }
+
+    private async Task NextPage()
+    {
+        _currentPage = await JS.InvokeAsync<int>("podcastNext");
+        StateHasChanged();
+    }
+
+    private async Task OnExploreClick()
+    {
+        Nav.NavigateTo($"{Nav.BaseUri}#contact");
+        await JS.InvokeVoidAsync("scrollToElement", "contact");
+    }
+
+    private void OnLanguageChanged() => InvokeAsync(StateHasChanged);
+
+    public async ValueTask DisposeAsync()
+    {
+        Translation.OnLanguageChanged -= OnLanguageChanged;
+        await Task.CompletedTask;
+    }
+}

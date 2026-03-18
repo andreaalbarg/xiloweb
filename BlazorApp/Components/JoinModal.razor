@@ -1,0 +1,62 @@
+<div class="modal-overlay @(IsVisible ? "active" : "")" @onclick="HandleOverlayClick">
+    <div class="modal modal-small" @onclick:stopPropagation>
+        <button class="modal-close" aria-label="Close" @onclick="Close">&times;</button>
+        <h3 class="modal-title">@Translation.T("modal-title")</h3>
+        <div class="modal-event">
+            @if (!string.IsNullOrEmpty(LumaUrl))
+            {
+                <p>@Translation.T("modal-event-text")</p>
+                <a href="@LumaUrl" target="_blank" class="btn btn-demoday">
+                    @Translation.T("modal-register")
+                </a>
+            }
+            else
+            {
+                <p>@Translation.T("modal-no-events")</p>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    public TranslationService Translation { get; set; } = default!;
+
+    [Parameter]
+    public bool IsVisible { get; set; } = false;
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    /// <summary>
+    /// Set to a Luma event URL when there is an upcoming event, or leave null/empty for no events.
+    /// Example: "https://lu.ma/your-event-id"
+    /// </summary>
+    [Parameter]
+    public string? LumaUrl { get; set; } = null;
+
+    protected override void OnInitialized()
+    {
+        Translation.OnLanguageChanged += OnLanguageChanged;
+    }
+
+    private async Task Close()
+    {
+        await OnClose.InvokeAsync();
+    }
+
+    private async Task HandleOverlayClick()
+    {
+        await OnClose.InvokeAsync();
+    }
+
+    private void OnLanguageChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        Translation.OnLanguageChanged -= OnLanguageChanged;
+    }
+}

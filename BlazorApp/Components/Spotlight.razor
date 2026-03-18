@@ -1,0 +1,38 @@
+<section class="spotlight">
+    <h2 class="spotlight-heading">@Translation.T("spotlight-heading")</h2>
+    <div class="spotlight-container">
+        <div class="spotlight-inner">
+            <div class="spotlight-image">
+                <img src="/images/ChopLocal.JPG" alt="ChopLocal partnership" />
+            </div>
+            <div class="spotlight-content">
+                <p class="spotlight-label">@Translation.T("spotlight-label")</p>
+                <h3 class="spotlight-name">@Translation.T("spotlight-name")</h3>
+                <p class="spotlight-desc">@Translation.T("spotlight-description")</p>
+                <a href="https://choplocally.com/" target="_blank" class="btn-spotlight">
+                    @Translation.T("spotlight-cta")
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    [CascadingParameter]
+    public TranslationService Translation { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        Translation.OnLanguageChanged += OnLanguageChanged;
+    }
+
+    private void OnLanguageChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        Translation.OnLanguageChanged -= OnLanguageChanged;
+    }
+}

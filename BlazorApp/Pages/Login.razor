@@ -1,0 +1,67 @@
+@page "/login"
+@inject AuthService Auth
+@inject NavigationManager Nav
+
+<div class="admin-login-page">
+    <div class="admin-login-card">
+        <img src="/images/logo-dark.png" alt="XILO" class="admin-login-logo" />
+        <h2 class="admin-login-title">Admin Access</h2>
+
+        <EditForm Model="_model" OnValidSubmit="HandleLogin" class="admin-login-form">
+            <DataAnnotationsValidator />
+
+            <div class="admin-field">
+                <label>Username</label>
+                <InputText @bind-Value="_model.Username" placeholder="Username" />
+            </div>
+
+            <div class="admin-field">
+                <label>Password</label>
+                <InputText @bind-Value="_model.Password" type="password" placeholder="Password" />
+            </div>
+
+            @if (_error is not null)
+            {
+                <p class="admin-error">@_error</p>
+            }
+
+            <button type="submit" class="btn btn-red admin-login-btn" disabled="@_loading">
+                @(_loading ? "Signing in..." : "Sign in")
+            </button>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private LoginModel _model = new();
+    private bool _loading = false;
+    private string? _error = null;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && await Auth.IsAuthenticatedAsync())
+            Nav.NavigateTo("/admin");
+    }
+
+    private async Task HandleLogin()
+    {
+        _loading = true;
+        _error   = null;
+
+        var ok = await Auth.LoginAsync(_model.Username, _model.Password);
+        _loading = false;
+
+        if (ok)
+            Nav.NavigateTo("/admin");
+        else
+            _error = "Invalid username or password.";
+    }
+
+    private sealed class LoginModel
+    {
+        [System.ComponentModel.DataAnnotations.Required]
+        public string Username { get; set; } = "";
+        [System.ComponentModel.DataAnnotations.Required]
+        public string Password { get; set; } = "";
+    }
+}

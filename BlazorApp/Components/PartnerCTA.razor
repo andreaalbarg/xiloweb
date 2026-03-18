@@ -1,0 +1,38 @@
+@inject IJSRuntime JS
+@inject NavigationManager Nav
+
+<section class="partner" id="partner">
+    <div class="partner-container">
+        <h2 class="partner-title">@Translation.T("partner-cta-title")</h2>
+        <p class="partner-desc">@Translation.T("partner-cta-subtitle")</p>
+        <button class="btn btn-outline" @onclick="ScrollToContact">
+            @Translation.T("partner-cta-btn")
+        </button>
+    </div>
+</section>
+
+@code {
+    [CascadingParameter]
+    public TranslationService Translation { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        Translation.OnLanguageChanged += OnLanguageChanged;
+    }
+
+    private async Task ScrollToContact()
+    {
+        Nav.NavigateTo($"{Nav.BaseUri}#contact");
+        await JS.InvokeVoidAsync("scrollToElement", "contact");
+    }
+
+    private void OnLanguageChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        Translation.OnLanguageChanged -= OnLanguageChanged;
+    }
+}
